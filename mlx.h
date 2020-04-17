@@ -126,4 +126,6 @@ int	mlx_do_key_autorepeatoff(void *mlx_ptr);
 int	mlx_do_key_autorepeaton(void *mlx_ptr);
 int	mlx_do_sync(void *mlx_ptr);
 
+int	mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
+
 #endif /* MLX_H */
