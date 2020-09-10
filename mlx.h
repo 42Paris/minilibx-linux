@@ -74,7 +74,7 @@ char	*mlx_get_data_addr(void *img_ptr, int *bits_per_pixel,
 */
 int	mlx_put_image_to_window(void *mlx_ptr, void *win_ptr, void *img_ptr,
 				int x, int y);
-unsigned int	mlx_get_color_value(void *mlx_ptr, int color);
+int	mlx_get_color_value(void *mlx_ptr, int color);
 
 
 /*
@@ -125,5 +125,11 @@ int	mlx_hook(void *win_ptr, int x_event, int x_mask,
 int	mlx_do_key_autorepeatoff(void *mlx_ptr);
 int	mlx_do_key_autorepeaton(void *mlx_ptr);
 int	mlx_do_sync(void *mlx_ptr);
+
+int	mlx_mouse_move(void *mlx_ptr, void *win_ptr, int x, int y);
+int	mlx_mouse_hide(void *mlx_ptr, void *win_ptr);
+int	mlx_mouse_show(void *mlx_ptr, void *win_ptr);
+
+int	mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
 #endif /* MLX_H */

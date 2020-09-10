@@ -15,6 +15,7 @@ for inc in \
     /usr/X11R5/include        \
     /usr/X11R4/include        \
                               \
+    /usr/include              \
     /usr/include/X11          \
     /usr/include/X11R6        \
     /usr/include/X11R5        \
