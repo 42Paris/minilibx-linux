@@ -117,17 +117,24 @@ int	mlx_int_get_text_rgb(char *name, char *end)
 
 int	mlx_int_xpm_set_pixel(t_img *img, char *data, int opp, int col, int x)
 {
-		int		dec;
+	int				dec;
+	unsigned int 	ucol;
 
-		dec = opp;
-		while (dec--)
-		{
-				if (img->image->byte_order)
-						*(data+x*opp+dec) = col&0xFF;
-				else
-						*(data+x*opp+opp-dec-1) = col&0xFF;
-				col >>= 8;
-		}
+	if (opp == 4 && img->image->byte_order)
+		ucol = col | 0x000000FF;
+	else if (opp == 4)
+		ucol = col | 0xFF000000;
+	else
+		ucol = col;
+	dec = opp;
+	while (dec--)
+	{
+		if (img->image->byte_order)
+			*(data+x*opp+dec) = ucol&0xFF;
+		else
+			*(data+x*opp+opp-dec-1) = ucol&0xFF;
+		ucol >>= 8;
+	}
 }
 
 
