@@ -28,7 +28,8 @@ SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \
 	mlx_put_image_to_window.c mlx_get_color_value.c mlx_clear_window.c \
 	mlx_xpm.c mlx_int_str_to_wordtab.c mlx_destroy_window.c \
 	mlx_int_param_event.c mlx_int_set_win_event_mask.c mlx_hook.c \
-	mlx_rgb.c mlx_destroy_image.c mlx_mouse.c mlx_screen_size.c
+	mlx_rgb.c mlx_destroy_image.c mlx_mouse.c mlx_screen_size.c \
+	mlx_destroy_display.c
 
 OBJ	=$(SRC:.c=.o)
 CFLAGS	= -O3 -I$(INC)
