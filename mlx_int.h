@@ -29,6 +29,7 @@
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <X11/extensions/XShm.h>
+# include <X11/XKBlib.h>
 /* #include	<X11/xpm.h> */
 
 
@@ -117,6 +118,7 @@ typedef struct	s_xvar
 
 
 int				mlx_int_do_nothing();
+int				mlx_get_color_value();
 int				mlx_int_get_good_color();
 int				mlx_int_find_in_pcm();
 int				mlx_int_anti_resize_win();
