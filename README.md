@@ -23,7 +23,7 @@ Requirements
  - **e.g. _sudo apt-get install gcc make xorg libxext-dev libbsd-dev_ (Debian/Ubuntu)**
  
  MlX Color Opacity / Transparency / Alpha (32 bits depth)
- - 0x00 (fully transparent) or 0xFF (fully opaque)
+ - 0xFF (fully transparent) or 0x00 (fully opaque)
 
 Compile MinilibX
 
