@@ -115,7 +115,7 @@ int	mlx_destroy_window(void *mlx_ptr, void *win_ptr);
 
 int	mlx_destroy_image(void *mlx_ptr, void *img_ptr);
 
-int	mlx_destroy_dispaly(void *mlx_ptr);
+int	mlx_destroy_display(void *mlx_ptr);
 
 /*
 **  generic hook system for all events, and minilibX functions that
