@@ -12,7 +12,6 @@ Contents
  - a public include file mlx.h
  - a tiny configure script to generate an appropriate Makefile.gen
 
-
 Requirements
 
  - MinilibX only support TrueColor visual type (8,15,16,24 or 32 bits depth)
@@ -23,6 +22,9 @@ Requirements
  - Utility functions from BSD systems - development files (package libbsd-dev)
  - **e.g. _sudo apt-get install gcc make xorg libxext-dev libbsd-dev_ (Debian/Ubuntu)**
  
+ MlX Color Opacity / Transparency / Alpha (32 bits depth)
+ - 0xFF (fully transparent) or 0x00 (fully opaque)
+
 Compile MinilibX
 
  - run ./configure or make
