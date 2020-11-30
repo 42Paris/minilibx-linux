@@ -28,41 +28,40 @@ static int	win_count(t_xvar *xvar)
 	return (i);
 }
 
-int			mlx_destroy_window(t_xvar *xvar,t_win_list *win);
-
 int			mlx_loop(t_xvar *xvar)
 {
-	int			pass;
 	XEvent		ev;
 	t_win_list	*win;
+	int 		end_loop;
 
 	mlx_int_set_win_event_mask(xvar);
 	xvar->do_flush = 0;
+	end_loop = 0;
 	while (win_count(xvar))
 	{
-		pass = 0;
 		while (!xvar->loop_hook || XPending(xvar->display))
 		{
 			XNextEvent(xvar->display,&ev);
 			win = xvar->win_list;
 			while (win && (win->window!=ev.xany.window))
 				win = win->next;
-			if (win && ev.type < MLX_MAX_EVENT)
+			if (win && ev.type < MLX_MAX_EVENT && win->hooks[ev.type].hook)
 			{
-				if (ev.type == ClientMessage && (Atom)ev.xclient.data.l[0] == xvar->wm_delete_window)
-				{
-					mlx_destroy_window(xvar, win);
-					pass = 1;
-					break ;
-				}
-				if (win->hooks[ev.type].hook)
-					mlx_int_param_event[ev.type](xvar, &ev, win);
+				end_loop = (ev.type == ClientMessage
+							&& (Atom)ev.xclient.data.l[0] == xvar->wm_delete_window)
+						   || ev.xkey.keycode == 9;
+				mlx_int_param_event[ev.type](xvar, &ev, win);
+				if (end_loop)
+					break;
 			}
 		}
-		if (pass)
-			continue ;
-		XSync(xvar->display, False);
-		xvar->loop_hook(xvar->loop_param);
+		if (!end_loop)
+		{
+			xvar->loop_hook(xvar->loop_param);
+			XSync(xvar->display, False);
+		}
+		else
+			break ;
 	}
 	return (0);
 }
