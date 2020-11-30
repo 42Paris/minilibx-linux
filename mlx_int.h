@@ -114,6 +114,7 @@ typedef struct	s_xvar
 	int			do_flush;
 	int			decrgb[6];
 	Atom		wm_delete_window;
+	int 		end_loop;
 }				t_xvar;
 
 

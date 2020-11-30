@@ -43,6 +43,7 @@ void	*mlx_init()
 		xvar->cmap = XCreateColormap(xvar->display,xvar->root,
 				 xvar->visual,AllocNone);
 	mlx_int_rgb_conversion(xvar);
+	xvar->end_loop = 0;
 	return (xvar);
 }
 
