@@ -49,11 +49,12 @@ int			mlx_loop(t_xvar *xvar)
 			win = xvar->win_list;
 			while (win && (win->window!=ev.xany.window))
 				win = win->next;
+
 			if (win && ev.type < MLX_MAX_EVENT && win->hooks[ev.type].hook)
 				mlx_int_param_event[ev.type](xvar, &ev, win);
 		}
-		xvar->loop_hook(xvar->loop_param);
 		XSync(xvar->display, False);
+		xvar->loop_hook(xvar->loop_param);
 	}
 	return (0);
 }
