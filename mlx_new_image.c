@@ -108,9 +108,13 @@ void	*mlx_int_new_image(t_xvar *xvar,int width, int height,int format)
 {
   t_img	*img;
 
-  if (!(img = malloc(sizeof(*img))) ||
-      !(img->data = malloc((width+32)*height*4)))
+  if (!(img = malloc(sizeof(*img))))
     return ((void *)0);
+  if (!(img->data = malloc((width+32)*height*4)))
+  {
+    free(img);
+    return ((void *)0);
+  }
   bzero(img->data,(width+32)*height*4);
   img->image = XCreateImage(xvar->display,xvar->visual,xvar->depth,format,0,
 			    img->data,width,height,32,0);
