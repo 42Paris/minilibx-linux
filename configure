@@ -1,95 +1,121 @@
 #!/bin/sh
 
+set -e
 
-if [ -n "$1" -a "$1" = "--help" ] ; then
-	echo "Usage : $0\n Auto-configure and make MinilibX"
-	exit
-fi
+BOLD="\e[1m"
+RESET="\e[0m"
+LIGHT_RED="\e[91m"
+LIGHT_GREEN="\e[92m"
+LIGHT_CYAN="\e[96m"
 
+logging(){
+	local type=$1; shift
+	printf "${LIGHT_CYAN}${BOLD}configure${RESET} [%b] : %b\n" "$type" "$*"
+}
+log_info(){
+	logging "${LIGHT_GREEN}info${RESET}" "$@"
+}
+log_error(){
+	logging "${LIGHT_RED}error${RESET}" "$@" >&2
+}
 
-conf_inc=NO
+# find and print x11 header path
+get_xlib_include_path(){
+	local result=""
 
-for inc in \
-    /usr/X11/include          \
-    /usr/X11R6/include        \
-    /usr/X11R5/include        \
-    /usr/X11R4/include        \
-                              \
-    /usr/include              \
-    /usr/include/X11          \
-    /usr/include/X11R6        \
-    /usr/include/X11R5        \
-    /usr/include/X11R4        \
-                              \
-    /usr/local/X11/include    \
-    /usr/local/X11R6/include  \
-    /usr/local/X11R5/include  \
-    /usr/local/X11R4/include  \
-                              \
-    /usr/local/include/X11    \
-    /usr/local/include/X11R6  \
-    /usr/local/include/X11R5  \
-    /usr/local/include/X11R4  \
-                              \
-    /usr/X386/include         \
-    /usr/x386/include         \
-    /usr/XFree86/include/X11  \
-                              \
-    /usr/include              \
-    /usr/local/include        \
-    /usr/athena/include       \
-    /usr/local/x11r5/include  \
-    /usr/lpp/Xamples/include  \
-                              \
-    /usr/openwin/include      \
-    /usr/openwin/share/include
- do
-	if [ -f "$inc/X11/Xlib.h" -a -f "$inc/X11/extensions/XShm.h" ]; then
-		conf_inc=$inc
-		break
+	for inc in \
+		/usr/X11/include          \
+		/usr/X11R6/include        \
+		/usr/X11R5/include        \
+		/usr/X11R4/include        \
+								\
+		/usr/include              \
+		/usr/include/X11          \
+		/usr/include/X11R6        \
+		/usr/include/X11R5        \
+		/usr/include/X11R4        \
+								\
+		/usr/local/X11/include    \
+		/usr/local/X11R6/include  \
+		/usr/local/X11R5/include  \
+		/usr/local/X11R4/include  \
+								\
+		/usr/local/include/X11    \
+		/usr/local/include/X11R6  \
+		/usr/local/include/X11R5  \
+		/usr/local/include/X11R4  \
+								\
+		/usr/X386/include         \
+		/usr/x386/include         \
+		/usr/XFree86/include/X11  \
+								\
+		/usr/local/include        \
+		/usr/athena/include       \
+		/usr/local/x11r5/include  \
+		/usr/lpp/Xamples/include  \
+								\
+		/usr/openwin/include      \
+		/usr/openwin/share/include
+	do
+		if [ -f "$inc/X11/Xlib.h" -a -f "$inc/X11/extensions/XShm.h" ]; then
+			result=$inc
+			break
+		fi
+	done
+	echo $result
+}
+
+show_help(){
+cat <<EOF
+Usage :
+$0              Auto-configure and make MinilibX
+$0 clean        Execute the clean rule of both Makefile.gen
+EOF
+}
+
+clean(){
+	log_info 'Execute "make clean" from "makefile.gen"'
+	make -f Makefile.gen clean 			
+	log_info 'Execute "make clean" from "test/makefile.gen"'
+	make -f Makefile.gen -C test/ --no-print-directory clean
+}
+
+parse_args(){
+	case "$1" in
+		--help | -h)
+			show_help
+			exit 0;;
+		clean)
+			clean
+			exit 0;;
+		"") return;;
+		*)
+			log_error "unknown command \"$1\"\nRun \"./configure --help\" for usage."
+			exit 1;;
+	esac
+}
+
+main(){
+	local xlib_inc="$(get_xlib_include_path)"
+
+	parse_args "$@"
+	if [ -z "$xlib_inc" ]; then
+		log_error "Can't find a suitable X11 include directory."
+		exit 1
 	fi
- done
+	log_info "Found X11 include path directory: $xlib_inc"
 
+	log_info 'Generate "makefile.gen" from template "makefile.mk"'
+		echo "INC=$xlib_inc"  	 	    	>  Makefile.gen 
+		cat Makefile.mk | grep -v %%%%  	>> Makefile.gen
+	log_info 'Generate "test/makefile.gen" from template "test/makefile.mk"'
+		echo "INC=$xlib_inc"				>  test/Makefile.gen
+		cat test/Makefile.mk | grep -v %%%% >> test/Makefile.gen
 
-if [ "$conf_inc" = "NO" ]; then
-	echo "Can't find a suitable X11 include directory."
-	exit
-else
-	echo "X11 include dir : $conf_inc"
-fi
+	log_info 'Execute "make all" from file "makefile.gen"'
+		make -f Makefile.gen all
+	log_info 'Execute "make all" from file "test/makefile.gen"'
+		(cd test ; make -f Makefile.gen all )
+}
 
-if [ -z "$HOSTTYPE" ]; then
-    conf_ht=`uname -s`
-else
-    conf_ht=$HOSTTYPE
-fi
-
-if [ -z "$conf_ht" ]; then
-    conf_docp=""
-else
-    conf_docp="do_cp"
-    echo "lib_$conf_ht generation"
-fi
-
-
-/bin/echo "INC=$conf_inc" > Makefile.gen
-/bin/echo "HT=$conf_ht" >> Makefile.gen
-/bin/echo "DOCP=$conf_docp" >> Makefile.gen
-cat Makefile.mk | grep -v %%%% >> Makefile.gen
-
-/bin/echo "INC=$conf_inc" > test/Makefile.gen
-/bin/echo "HT=$conf_ht" >> test/Makefile.gen
-/bin/echo "DOCP=$conf_docp" >> test/Makefile.gen
-cat test/Makefile.mk | grep -v %%%% >> test/Makefile.gen
-
-
-if [ -n "$1" -a "$1" = "clean" ] ; then
-    echo "Now make it clean."
-    make -f Makefile.gen clean
-    (cd test ; make -f Makefile.gen clean)
-    exit
-fi
-
-echo "Now make it."
-make -f Makefile.gen all
-(cd test ; make -f Makefile.gen all )
+main "$@"
