@@ -12,12 +12,12 @@
 
 
 INC	=%%%%
-HT	=%%%%
-DOCP	=%%%%
+
 
 CC	= gcc
 
-NAME	= libmlx.a
+NAME		= libmlx.a
+NAME_UNAME	= libmlx_$(shell uname).a
 
 SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \
 	mlx_mouse_hook.c mlx_key_hook.c mlx_expose_hook.c mlx_loop_hook.c \
@@ -31,18 +31,33 @@ SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \
 	mlx_rgb.c mlx_destroy_image.c mlx_mouse.c mlx_screen_size.c \
 	mlx_destroy_display.c
 
-OBJ	=$(SRC:.c=.o)
+OBJ_DIR = obj
+OBJ	= $(addprefix $(OBJ_DIR)/,$(SRC:%.c=%.o))
 CFLAGS	= -O3 -I$(INC)
 
-all	: $(NAME) $(DOCP)
+all	: $(NAME)
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(NAME)	: $(OBJ)
 	ar -r $(NAME) $(OBJ)
 	ranlib $(NAME)
+	cp $(NAME) $(NAME_UNAME)
 
-do_cp	:
-	cp $(NAME) libmlx_$(HT).a
+check: all
+	@test/run_tests.sh
 
+show:
+	@printf "NAME  		: $(NAME)\n"
+	@printf "NAME_UNAME	: $(NAME_UNAME)\n"
+	@printf "CC		: $(CC)\n"
+	@printf "CFLAGS		: $(CFLAGS)\n"
+	@printf "SRC		:\n	$(SRC)\n"
+	@printf "OBJ		:\n	$(OBJ)\n"
 
 clean	:
-	rm -f $(OBJ) $(NAME) libmlx_$(HT).a *~ core *.core
+	rm -rf $(OBJ_DIR)/ $(NAME) $(NAME_UNAME) *~ core *.core
+
+.PHONY: all check show clean

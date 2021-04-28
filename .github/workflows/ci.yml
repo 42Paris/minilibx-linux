@@ -1,0 +1,87 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    env:
+      DISPLAY: ":99"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install mlx dependencies
+      run: |
+        set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install gcc make xorg libxext-dev libbsd-dev
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install xquartz
+            echo "/usr/X11/bin" >> $GITHUB_PATH
+        else
+            echo "$RUNNER_OS not supported"
+            exit 1
+        fi
+    - name: Setup x11 headless testing environment
+      run: |
+        set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install xvfb xdotool valgrind
+            Xvfb $DISPLAY -screen 0 1280x1024x24 &
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install xdotool
+            defaults write org.x.X11 enable_test_extensions -boolean true
+            sudo Xvfb $DISPLAY -screen 0 1280x1024x24 &           
+        else
+            echo "$RUNNER_OS not supported"
+            exit 1
+        fi
+    - name: Run ./configure
+      run: ./configure
+
+    - name: make check Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: make -f Makefile.gen check
+    - name: make check MacOS
+      continue-on-error: true
+      if: matrix.os == 'macos-latest'
+      run: make -f Makefile.gen check
+      # Didn't find a way to simulate inputs on Macos. libxdo seem to no longer work on macos.
+      # It can be partially fixed writing proper unit-tests, thus avoiding the need of libxdo.
+
+    - name: Check leaks from binary "test/mlx-test"
+      run: |
+        cd test
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            echo "Info: Still reachable doesn't matter. Valgrind will return success on thoses reports.
+              It is fine, we searching for lost pointers. Valgrind will return exit status 42 if any block is lost."
+            valgrind --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./mlx-test > /dev/null &
+            PID=$!
+            sleep 30
+            xdotool search --name Title3 windowfocus key Escape
+            xdotool search --name Title2 windowfocus key Escape
+            wait $PID
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            MallocStackLoggingNoCompact=1
+            ./mlx-test &
+            sleep 30
+            leaks mlx-test
+            pkill mlx-test
+        fi
+ 
+    - name: Norminette, just for fun
+      continue-on-error: true
+      run: |
+        pip3 install Norminette
+        norminette *.c *.h
+        norminette --version
