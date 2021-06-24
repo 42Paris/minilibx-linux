@@ -75,7 +75,7 @@ char	*mlx_int_static_line(char **xpm_data,int *pos,int size)
 					return ((char *)0);
 			len = len2;
 	}
-	strlcpy_is_not_posix(copy, str, len2);
+	strlcpy_is_not_posix(copy, str, len2 + 1);
 	
 	return (copy);
 }
