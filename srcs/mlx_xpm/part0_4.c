@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 19:39:11 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/05 20:10:40 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 18:55:20 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	spart2(t_zeta *zeta);
 
 int	part0(t_zeta *zeta)
 {
-	memset(zeta, 0, sizeof(t_zeta));
 	zeta->line = zeta->f(zeta->info, &zeta->pos, zeta->info_size);
 	if (!zeta->line)
 		return (-1);

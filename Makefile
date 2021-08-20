@@ -112,6 +112,10 @@ DEPS		=	${OBJS:.o=.d}
 CFLAGS		=	-Wall -Wextra -Werror -MMD -I${INCD} -I${PRIV_INCD}
 LDFLAGS		=	
 
+ifeq (${DEBUG}, true)
+	CFLAGS	+=	-g
+endif
+
 #####################################
 #               FLAGS               #
 #####################################

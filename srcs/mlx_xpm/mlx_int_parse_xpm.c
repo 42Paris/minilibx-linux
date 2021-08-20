@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 17:35:45 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/05 20:01:11 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 18:55:13 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	*mlx_int_parse_xpm(t_xvar *xvar, void *info, int info_size,
 {
 	t_zeta	zeta;
 
+	memset(&zeta, 0, sizeof(t_zeta));
 	zeta.info = info;
 	zeta.info_size = info_size;
 	zeta.f = f;
