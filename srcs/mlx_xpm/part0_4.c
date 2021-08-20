@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 19:39:11 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/20 20:21:02 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 20:29:01 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	spart2(t_zeta *zeta);
 
 int	part0(t_zeta *zeta)
 {
-	printf("part0\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	zeta->line = zeta->f(zeta->info, &zeta->pos, zeta->info_size);
 	if (!zeta->line)
 		return (-1);
@@ -41,7 +40,6 @@ int	part0(t_zeta *zeta)
 
 int	part1(t_zeta *zeta)
 {
-	printf("part1\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	if (zeta->cpp <= 2)
 	{
 		zeta->method = 1;
@@ -63,19 +61,14 @@ int	part1(t_zeta *zeta)
 
 int	part2(t_zeta *zeta)
 {
-	printf("part2.0\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	while (zeta->i--)
 		if (spart0(zeta) == -1)
 			return (-1);
-	printf("part2.1\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	return (0);
 }
 
 int	part3(t_xvar *xvar, t_zeta *zeta)
 {
-	printf("part3\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height); fflush(stdout);
-	// printf("part3\n\tzeta->width: %d\n\n", zeta->width); fflush(stdout);
-	// printf("part3\n\tzeta->height: %d\n\n", zeta->height); fflush(stdout);
 	if (spart1(xvar, zeta) == -1)
 		return (-1);
 	while (zeta->i--)

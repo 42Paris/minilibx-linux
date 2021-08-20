@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 19:46:43 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/20 20:06:57 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 20:38:52 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ int	spart0(t_zeta *zeta)
 
 int	spart1(t_xvar *xvar, t_zeta *zeta)
 {
-	// printf("Hello\n");
-	// printf("zeta->width  : %d\n", zeta->width);
-	// printf("zeta->height : %d\n", zeta->height);
 	zeta->img = mlx_new_image(xvar, zeta->width, zeta->height);
 	if (!zeta->img)
 		return (-1);
