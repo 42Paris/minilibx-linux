@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 19:39:11 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/20 19:56:46 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:58:51 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,11 @@ int	part1(t_zeta *zeta)
 
 int	part2(t_zeta *zeta)
 {
-	printf("part2\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
+	printf("part2.0\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	while (zeta->i--)
 		if (spart0(zeta) == -1)
 			return (-1);
+	printf("part2.1\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	return (0);
 }
 
