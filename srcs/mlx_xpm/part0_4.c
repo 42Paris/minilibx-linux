@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 19:39:11 by jodufour          #+#    #+#             */
-/*   Updated: 2021/08/20 19:37:47 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:55:32 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	part0(t_zeta *zeta)
 
 int	part1(t_zeta *zeta)
 {
+	printf("part1\n\tzeta->width: %d\n\tzeta->height: %d\n\n", zeta->width, zeta->height);
 	if (zeta->cpp <= 2)
 	{
 		zeta->method = 1;
