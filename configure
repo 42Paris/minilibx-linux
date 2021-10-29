@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 set -e
 
-BOLD="\e[1m"
-RESET="\e[0m"
-LIGHT_RED="\e[91m"
-LIGHT_GREEN="\e[92m"
-LIGHT_CYAN="\e[96m"
+BOLD="\033[1m"
+RESET="\033[0m"
+LIGHT_RED="\033[91m"
+LIGHT_GREEN="\033[92m"
+LIGHT_CYAN="\033[96m"
 
 logging(){
 	local type=$1; shift
@@ -75,9 +75,9 @@ EOF
 
 clean(){
 	log_info 'Execute "make clean" from "makefile.gen"'
-	make -f Makefile.gen clean 			
+	${MAKE} -f Makefile.gen clean
 	log_info 'Execute "make clean" from "test/makefile.gen"'
-	make -f Makefile.gen -C test/ --no-print-directory clean
+	${MAKE} -f Makefile.gen -C test/ --no-print-directory clean
 }
 
 parse_args(){
@@ -98,6 +98,11 @@ parse_args(){
 main(){
 	local xlib_inc="$(get_xlib_include_path)"
 
+	case $(uname) in
+		FreeBSD) MAKE=gmake ;;
+		*) MAKE=make ;;
+	esac
+
 	parse_args "$@"
 	if [ -z "$xlib_inc" ]; then
 		log_error "Can't find a suitable X11 include directory."
@@ -113,9 +118,9 @@ main(){
 		cat test/Makefile.mk | grep -v %%%% >> test/Makefile.gen
 
 	log_info 'Execute "make all" from file "makefile.gen"'
-		make -f Makefile.gen all
+		${MAKE} -f Makefile.gen all
 	log_info 'Execute "make all" from file "test/makefile.gen"'
-		(cd test ; make -f Makefile.gen all )
+		(cd test ; ${MAKE} -f Makefile.gen all )
 }
 
 main "$@"
