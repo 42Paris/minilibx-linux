@@ -13,11 +13,14 @@
 
 INC	=%%%%
 
-
+UNAME = $(shell uname)
 CC	= gcc
+ifeq ($(UNAME),FreeBSD)
+	CC = clang
+endif
 
 NAME		= libmlx.a
-NAME_UNAME	= libmlx_$(shell uname).a
+NAME_UNAME	= libmlx_$(UNAME).a
 
 SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \
 	mlx_mouse_hook.c mlx_key_hook.c mlx_expose_hook.c mlx_loop_hook.c \
