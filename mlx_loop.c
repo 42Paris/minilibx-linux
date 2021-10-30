@@ -56,7 +56,8 @@ int			mlx_loop(t_xvar *xvar)
 				mlx_int_param_event[ev.type](xvar, &ev, win);
 		}
 		XSync(xvar->display, False);
-		xvar->loop_hook(xvar->loop_param);
+		if (xvar->loop_hook)
+			xvar->loop_hook(xvar->loop_param);
 	}
 	return (0);
 }
