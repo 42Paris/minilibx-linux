@@ -24,7 +24,8 @@ jobs:
       run: |
         set -x
         if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install gcc make xorg libxext-dev libbsd-dev
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq gcc make xorg libxext-dev libbsd-dev
         elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install xquartz
             echo "/usr/X11/bin" >> $GITHUB_PATH
