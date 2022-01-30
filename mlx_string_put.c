@@ -21,6 +21,7 @@ int		mlx_string_put(t_xvar *xvar,t_win_list *win,
    xgcv.foreground = mlx_int_get_good_color(xvar,color);
    XChangeGC(xvar->display,win->gc,GCForeground,&xgcv);
    XDrawString(xvar->display,win->window,win->gc,x,y,string,strlen(string));
+   free(string);
    if (xvar->do_flush)
      XFlush(xvar->display);
 }
