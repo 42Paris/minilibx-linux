@@ -1,5 +1,7 @@
-
-
+/*
+**  Requires: sudo apt install libxrandr-dev libxrandr2
+**  Compile with flag: -lXrandr
+*/
 
 #include	"mlx_int.h"
 

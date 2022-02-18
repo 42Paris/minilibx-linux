@@ -11,28 +11,34 @@
 
 void	*mlx;
 void	*win1;
-void    *win2;
-void    *win3;
-void    *im1;
+void  *win2;
+void  *win3;
+void  *window_fullsreen;
+void  *im1;
 void	*im2;
 void	*im3;
 void	*im4;
+void	*im5;
 int	bpp1;
 int	bpp2;
 int	bpp3;
 int	bpp4;
+int	bpp5;
 int	sl1;
 int	sl2;
 int	sl3;
 int	sl4;
+int	sl5;
 int	endian1;
 int	endian2;
 int	endian3;
 int	endian4;
+int	endian5;
 char	*data1;
 char	*data2;
 char	*data3;
 char	*data4;
+char	*data5;
 int	xpm1_x;
 int	xpm1_y;
 
@@ -88,8 +94,7 @@ int	mouse_win3(int x,int y, void *p)
   printf("Mouse moving in Win3, at %dx%d.\n",x,y);
 }
 
-
-int	main()
+static void  test_endianess(void)
 {
   int	a;
 
@@ -100,7 +105,10 @@ int	main()
   else
     local_endian = 0;
   printf(" => Local Endian : %d\n",local_endian);
+}
 
+static void  test_mlx_init(void)
+{
   printf(" => Connection ...");
   if (!(mlx = mlx_init()))
     {
@@ -108,7 +116,10 @@ int	main()
       exit(1);
     }
   printf("OK (use_xshm %d pshm_format %d)\n",((t_xvar *)mlx)->use_xshm,((t_xvar *)mlx)->pshm_format);
+}
 
+static void  test_window(void)
+{
   printf(" => Window1 %dx%d \"Title 1\" ...",WIN1_SX,WIN1_SY);
   if (!(win1 = mlx_new_window(mlx,WIN1_SX,WIN1_SY,"Title1")))
     {
@@ -126,7 +137,10 @@ int	main()
   mlx_clear_window(mlx,win1);
   printf("OK\n");
   sleep(2);
+}
 
+static void  test_image(void)
+{
   printf(" => Image1 ZPixmap %dx%d ...",IM1_SX,IM1_SY);
   if (!(im1 = mlx_new_image(mlx,IM1_SX,IM1_SY)))
     {
@@ -150,7 +164,10 @@ int	main()
   mlx_destroy_image(mlx, im1);
   printf("OK\n");
   sleep(2);
+}
 
+static void  test_string(void)
+{
   printf(" => Image3 ZPixmap %dx%d ...",IM3_SX,IM3_SY);
   if (!(im3 = mlx_new_image(mlx,IM3_SX,IM3_SY)))
     {
@@ -175,7 +192,10 @@ int	main()
   mlx_string_put(mlx,win1,15,WIN1_SY/2+20,0x00FFFF,"MinilibX test");
   printf("OK\n");
   sleep(2);
+}
 
+static void  test_xpm(void)
+{
   printf(" => Xpm from file ...");
   if (!(im2 = mlx_xpm_file_to_image(mlx,"open.xpm",&xpm1_x,&xpm1_y)))
     {
@@ -190,9 +210,60 @@ int	main()
   printf(" => Put xpm ...");
   mlx_put_image_to_window(mlx,win1,im2,0,0);
   mlx_put_image_to_window(mlx,win1,im2,100,100);
+  printf("OK\n");  sleep(2);
+}
+
+static void  test_fullscreen_window(void)
+{
+  int size_x;
+  int size_y;
+
+  printf(" => Fullscreen Window \"Fullscreen1\" ");
+  if (!(window_fullsreen = mlx_new_fullscreen_window(mlx,&size_x,&size_y,"Title1")))
+    {
+      printf(" !! KO !!\n");
+      exit(1);
+    }
+  printf("%dx%d ...", size_x, size_y);
+  printf("OK\n");
+
+  printf(" => Image5 ZPixmap %dx%d ...",size_x,size_y);
+  if (!(im5 = mlx_new_image(mlx,size_x,size_y)))
+    {
+      printf(" !! KO !!\n");
+      exit(1);
+    }
+  data5 = mlx_get_data_addr(im5,&bpp5,&sl5,&endian5);
+  printf("OK (bpp5: %d, sizeline5: %d endian: %d type: %d)\n",bpp5,sl5,endian5,
+	 ((t_img *)im5)->type);
+
+  printf(" => Fill Image5 ...");
+  color_map_2(data5,bpp5,sl5,size_x,size_y,endian5, 5);
+  printf("OK (pixmap : %d)\n",(int)((t_img *)im5)->pix);
+
+  printf(" => Put Image5 ...");
+  mlx_put_image_to_window(mlx,window_fullsreen,im5,20,20);
   printf("OK\n");
   sleep(2);
 
+  printf(" => Destroy Image5 ... ");
+  mlx_destroy_image(mlx, im5);
+  printf("OK\n");
+  sleep(2);
+
+  printf(" => Clear Fullscreen Window ...");
+  mlx_clear_window(mlx,window_fullsreen);
+  printf("OK\n");
+  sleep(2);
+
+  printf(" => Destroy Fullscreen Window ...");
+  mlx_destroy_window(mlx,window_fullsreen);
+  printf("OK\n");
+  sleep(2);
+}
+
+static void  test_hooks(void)
+{
   printf(" => 2nd window,");
   win2 = mlx_new_window(mlx,WIN1_SX,WIN1_SY,"Title2");
   if (!(im4 = mlx_new_image(mlx,IM3_SX, IM3_SY)))
@@ -216,10 +287,21 @@ int	main()
   mlx_hook(win3, MotionNotify, PointerMotionMask, mouse_win3, 0);
 
   printf("OK\nNow in Loop. Just play. Esc in 3 to destroy, 1&2 to quit.\n");
-  
+
   mlx_loop(mlx);
 }
 
+int	main()
+{
+  test_endianess();
+  test_mlx_init();
+  test_window();
+  test_image();
+  test_string();
+  test_xpm();
+  test_fullscreen_window();
+  test_hooks();
+}
 
 int	color_map_1(void *win,int w,int h)
 {
