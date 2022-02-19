@@ -33,15 +33,6 @@ static XSetWindowAttributes	get_default_attributes(t_xvar *xvar)
 	return (xswa);
 }
 
-static void	*allocate_window(void)
-{
-	t_win_list	*new_win;
-
-	if (!(new_win = malloc(sizeof(*new_win))))
-		return ((void *)0);
-	return (new_win);
-}
-
 static void	*set_configs(t_xvar *xvar, t_win_list *new_win, int size_x,
 		int size_y, char *title)
 {
@@ -74,8 +65,9 @@ void	*mlx_new_window(t_xvar *xvar, int size_x, int size_y, char *title)
 	t_win_list				*new_win;
 	XSetWindowAttributes	xswa;
 
+	if (!(new_win = malloc(sizeof(*new_win))))
+		return ((void *)0);
 	xswa = get_default_attributes(xvar);
-	new_win = allocate_window();
 	new_win->window = XCreateWindow(xvar->display, xvar->root, 0, 0, size_x,
 			size_y, 0, CopyFromParent, InputOutput, xvar->visual,
 			CWEventMask | CWBackPixel | CWBorderPixel | CWColormap, &xswa);
@@ -88,9 +80,10 @@ void	*mlx_new_fullscreen_window(t_xvar *xvar, int *size_x, int *size_y,
 	t_win_list				*new_win;
 	XSetWindowAttributes	xswa;
 
+	if (!(new_win = malloc(sizeof(*new_win))))
+		return ((void *)0);
 	xswa = get_default_attributes(xvar);
 	xswa.override_redirect = 1;
-	new_win = allocate_window();
 	mlx_get_screen_size(xvar, size_x, size_y);
 	new_win->window = XCreateWindow(xvar->display, xvar->root, 0, 0, *size_x,
 			*size_y, 0, CopyFromParent, InputOutput, xvar->visual,
