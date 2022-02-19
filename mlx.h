@@ -1,9 +1,9 @@
 /*
-** mlx.h for MinilibX in 
-** 
+** mlx.h for MinilibX in
+**
 ** Made by Charlie Root
 ** Login   <ol@epitech.net>
-** 
+**
 ** Started on  Mon Jul 31 16:37:50 2000 Charlie Root
 ** Last update Tue May 15 16:23:28 2007 Olivier Crouzet
 */
@@ -44,6 +44,9 @@ void	*mlx_init();
 */
 
 void	*mlx_new_window(void *mlx_ptr, int size_x, int size_y, char *title);
+void	*mlx_new_fullscreen_window(void *mlx_ptr, int *size_x, int *size_y,
+			char *title);
+
 /*
 **  return void *0 if failed
 */
