@@ -324,8 +324,10 @@ void	*mlx_xpm_file_to_image(t_xvar *xvar,char *file,int *width,int *height)
 		mlx_int_file_get_rid_comment(ptr, size);
 		if (img = mlx_int_parse_xpm(xvar,ptr,size,mlx_int_get_line))
 		{
-				*width = img->width;
-				*height = img->height;
+				if (width)
+						*width = img->width;
+				if (height)
+						*height = img->height;
 		}
 		munmap(ptr,size);
 		close(fd);
