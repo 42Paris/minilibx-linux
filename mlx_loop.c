@@ -52,7 +52,7 @@ int			mlx_loop(t_xvar *xvar)
 
 			if (win && ev.type == ClientMessage && ev.xclient.message_type == xvar->wm_protocols && ev.xclient.data.l[0] == xvar->wm_delete_window && win->hooks[DestroyNotify].hook)
 				win->hooks[DestroyNotify].hook(win->hooks[DestroyNotify].param);
-			if (win && ev.type < MLX_MAX_EVENT && win->hooks[ev.type].hook)
+			else if (win && ev.type < MLX_MAX_EVENT && win->hooks[ev.type].hook)
 				mlx_int_param_event[ev.type](xvar, &ev, win);
 		}
 		XSync(xvar->display, False);
